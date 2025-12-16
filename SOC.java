@@ -7,10 +7,10 @@ Program Name: Geo-Tracker Simulator
 
 */
 
-import java.util.Scanner;
+import java.util.*;
 
 public class SOC {
-
+    static ArrayList<AttackEntry> attacks = new ArrayList();
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         boolean run = true;
@@ -28,10 +28,10 @@ public class SOC {
                     displayInstructions();
                     break;
                 case 'B':
-                    startInvestigation();
+                    startInvestigation(attacks);
                     break;
                 case 'C':
-                    viewReport();
+                    viewLatestReport();
                     break;
                 case 'D':
                     run = false;
@@ -69,11 +69,46 @@ public class SOC {
         System.out.println("\n==========================\n");
     }
 
-    public static Object[] startInvestigation() {
-        
+    public static String[] startInvestigation(ArrayList<AttackEntry> attacks) {
+        Scanner s = new Scanner(System.in);
+        int rIDX = (int) (Math.random() * attacks.size());
+        boolean giveUp = false;
+        int score = 100;
+        int hints = 0;
+        int wa = 0;
+        while (!giveUp) {
+            AttackEntry randomAttack = attacks.get(rIDX);
+            System.out.println("A suspicious login was detected from an unknown country. Help us identify where it came from!");
+            System.out.println("Here is what you know so far: ");
+            System.out.println("IP Prefix: " + randomAttack.ipPrefix);
+            System.out.println("ISP: " + randomAttack.ISP);
+            System.out.println("Timezone: " + randomAttack.timezone);
+            System.out.println("What would you like to do?");
+            System.out.println("1. Make a Guess");
+            System.out.println("2. Receive a Hint");
+            int ans = s.nextInt();
+            if (ans == 1) {
+                String guess = s.nextLine();
+                if (guess.equals(randomAttack.countryName)) {
+                    System.out.println("Congratulations, you correctly identified the country of origin!");
+                    score -= ((wa * 10) + (hints * 5));
+                    System.out.println("For this investigation, you received a score of " + score + " . Nice job!");
+                    giveUp = true;
+                }
+                else {
+                    wa += 1;
+                }
+            }
+            else if (ans == 2) {
+                hints += 1;
+            }
+            else {
+                System.out.println("You did not enter a valid option.");
+            }
+        }
     }
 
-    public static void viewReport() {
-        
+    public static void viewLatestReport(String[] report) {
+        System.out.println("Here is information regarding your latest report: ");
     }
 }
