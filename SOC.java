@@ -4,19 +4,20 @@ Teacher: Mr. Scimeca
 Class: Computer Programing II
 Date: 11/25/25
 Program Name: Geo-Tracker Simulator
-
 */
 
 import java.util.*;
 
 public class SOC {
-    static ArrayList<AttackEntry> attacks = new ArrayList();
+    static ArrayList<AttackEntry> attacks = new ArrayList<>();
+    static String[] latestReport = null;
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         boolean run = true;
+        populateAttacks();
         intro();
         while (run) {
-            System.out.println("What would you like to do?");
+            System.out.println("\nWhat would you like to do?");
             System.out.println("A. View Instructions");
             System.out.println("B. Start Investigation");
             System.out.println("C. View Latest Investigation Report");
@@ -28,10 +29,15 @@ public class SOC {
                     displayInstructions();
                     break;
                 case 'B':
-                    startInvestigation(attacks);
+                    latestReport = startInvestigation(attacks);
                     break;
                 case 'C':
-                    viewLatestReport();
+                    if (latestReport == null) {
+                        System.out.println("No investigations have been completed yet. Please start an investigation in order to receive a report.");
+                    }
+                    else {
+                        viewLatestReport(latestReport);
+                    }
                     break;
                 case 'D':
                     run = false;
@@ -73,42 +79,88 @@ public class SOC {
         Scanner s = new Scanner(System.in);
         int rIDX = (int) (Math.random() * attacks.size());
         boolean giveUp = false;
+        boolean allHints = false;
         int score = 100;
         int hints = 0;
         int wa = 0;
+        String country;
+        AttackEntry randomAttack = attacks.get(rIDX);
+        country = randomAttack.countryName;
         while (!giveUp) {
-            AttackEntry randomAttack = attacks.get(rIDX);
             System.out.println("A suspicious login was detected from an unknown country. Help us identify where it came from!");
             System.out.println("Here is what you know so far: ");
             System.out.println("IP Prefix: " + randomAttack.ipPrefix);
             System.out.println("ISP: " + randomAttack.ISP);
             System.out.println("Timezone: " + randomAttack.timezone);
-            System.out.println("What would you like to do?");
+            System.out.println("\nWhat would you like to do?");
             System.out.println("1. Make a Guess");
             System.out.println("2. Receive a Hint");
+            System.out.println("3. Give Up");
             int ans = s.nextInt();
+            s.nextLine();
             if (ans == 1) {
                 String guess = s.nextLine();
-                if (guess.equals(randomAttack.countryName)) {
+                if (guess.equalsIgnoreCase(randomAttack.countryName)) {
                     System.out.println("Congratulations, you correctly identified the country of origin!");
                     score -= ((wa * 10) + (hints * 5));
-                    System.out.println("For this investigation, you received a score of " + score + " . Nice job!");
-                    giveUp = true;
+                    System.out.println("For this investigation, you received a score of " + score + ". Nice job!");
+                    break;
                 }
                 else {
+                    System.out.println("Unfortunately that was the wrong answer. 10 points have been deducted from your total score for this investigation.");
                     wa += 1;
                 }
             }
             else if (ans == 2) {
-                hints += 1;
+                if (!allHints) {
+                    hints += 1;
+                }
+                if (hints == 1) {
+                    System.out.println("Hint 1: " + randomAttack.hint1);
+                }
+                else if (hints == 2) {
+                    System.out.println("Hint 2: " + randomAttack.hint2);
+                }
+                else if (hints == 3) {
+                    System.out.println("Hint 3: " + randomAttack.hint3);
+                }
+                else {
+                    System.out.println("You have used the three available hints. Use what you know to figure out the correct country!");
+                    allHints = true;
+                }
+            }
+            else if (ans == 3) {
+                System.out.println("Nice try. Unfortunately you received a score of 0 for this investigation. Better luck next time!");
+                score = 0;
+                giveUp = true;
             }
             else {
                 System.out.println("You did not enter a valid option.");
             }
+            System.out.println("\n");
         }
+        String[] reportInfo = new String[4];
+        reportInfo[0] = Integer.toString(score);
+        reportInfo[1] = Integer.toString(hints);
+        reportInfo[2] = Integer.toString(wa);
+        reportInfo[3] = country;
+        return reportInfo;
     }
 
     public static void viewLatestReport(String[] report) {
         System.out.println("Here is information regarding your latest report: ");
+        System.out.println("Country of Origin: " + report[3]);
+        System.out.println("Total Score for Investigation: " + report[0]);
+        System.out.println("# of hints used: " + report[1]);
+        System.out.println("# of wrong answers submitted: " + report[2]);
+    }
+
+    public static void populateAttacks() {
+        attacks.add(new AttackEntry("Germany", "192.168.1.", "Deutsche Telekom", "CET",
+        "Uses umlauts in text", "Known for beer", "Famous for cars"));
+    attacks.add(new AttackEntry("Japan", "203.0.113.", "NTT Communications", "JST",
+        "Drives on the left side of the road", "Has stunning cherry blossoms", "It's very well known for its anime industry"));
+    attacks.add(new AttackEntry("Brazil", "200.0.0.", "Oi", "BRT",
+        "Home to the city of Fortaleza.", "The Amazon River runs through this country.", "Prominence in soccer"));
     }
 }
