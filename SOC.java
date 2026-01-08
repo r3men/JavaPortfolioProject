@@ -14,6 +14,7 @@ public class SOC {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         boolean run = true;
+        ArrayList<Integer> rIDXs = new ArrayList<>();
         populateAttacks();
         intro();
         while (run) {
@@ -29,7 +30,7 @@ public class SOC {
                     displayInstructions();
                     break;
                 case 'B':
-                    latestReport = startInvestigation(attacks);
+                    latestReport = startInvestigation(attacks, rIDXs);
                     break;
                 case 'C':
                     if (latestReport == null) {
@@ -75,9 +76,17 @@ public class SOC {
         System.out.println("\n==========================\n");
     }
 
-    public static String[] startInvestigation(ArrayList<AttackEntry> attacks) {
+    public static String[] startInvestigation(ArrayList<AttackEntry> attacks, ArrayList<Integer> usedIndexes) {
         Scanner s = new Scanner(System.in);
-        int rIDX = (int) (Math.random() * attacks.size());
+        if (usedIndexes.size() == attacks.size()) {
+            System.out.println("All investigations have been completed. No new cases are available.");
+            return null;
+        }
+        int rIDX;
+        do {
+            rIDX = (int) (Math.random() * attacks.size());
+        } while (usedIndexes.contains(rIDX));
+        usedIndexes.add(rIDX);
         boolean giveUp = false;
         boolean allHints = false;
         int score = 100;
@@ -139,11 +148,12 @@ public class SOC {
             }
             System.out.println("\n");
         }
-        String[] reportInfo = new String[4];
+        String[] reportInfo = new String[5];
         reportInfo[0] = Integer.toString(score);
         reportInfo[1] = Integer.toString(hints);
         reportInfo[2] = Integer.toString(wa);
         reportInfo[3] = country;
+        reportInfo[4] = Integer.toString(rIDX);
         return reportInfo;
     }
 
