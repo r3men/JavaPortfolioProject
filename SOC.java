@@ -94,7 +94,7 @@ public class SOC {
         System.out.println("3. Enter your guess when prompted\n");
         System.out.println("Each investigation begins with a value of 100 points. Each hint used is a deduction of 5 points, while each wrong answer will deduct 10 points from your total score for that investigation.");
         System.out.println("Answer wisely!");
-        System.out.println("Accuracy and efficiency matter—your SOC team is counting on you.\n");
+        System.out.println("Accuracy and efficiency matter; your SOC team is counting on you.\n");
         System.out.println("When you're ready, return to the main menu and start a new investigation.");
         System.out.println("\n==========================\n");
     }
