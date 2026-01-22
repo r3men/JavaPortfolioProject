@@ -140,9 +140,18 @@ public class SOC {
             System.out.println("1. Make a Guess");
             System.out.println("2. Receive a Hint");
             System.out.println("3. Give Up");
-            int userChoice = s.nextInt();
-            s.nextLine();
+            int userChoice;
+            try {
+                userChoice = s.nextInt();
+                s.nextLine();
+            } 
+            catch (InputMismatchException e) {
+                System.out.println("You did not enter a valid option.");
+                s.nextLine();
+                continue;
+            }
             if (userChoice == 1) {
+                System.out.println("Enter your guess: ");
                 String guess = s.nextLine();
                 if (guess.equalsIgnoreCase(randomAttack.countryName)) {
                     System.out.println("Congratulations, you correctly identified the country of origin!");
