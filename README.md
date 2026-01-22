@@ -1,5 +1,4 @@
-# Geo-Tracker Simulator
-## Developed by Raymond Zhang
+# Geo-Tracker Simulator | Developed by Raymond Zhang
 
 ## About This Project
 This project was constructed as my mid-year portfolio project for my Computer Programming II class. The project utilizes OOP, loops, methods, arrays, and arraylists. I used this project as a way to combine my love for geography and cybersecurity.
